@@ -20,11 +20,54 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import kotlin.system.exitProcess
 
 private val Bg = Color(0xFF090A0F)
 private val Card = Color(0xFF14161D)
 private val Accent = Color(0xFF7C4DFF)
 private val Muted = Color(0xFF9EA3B0)
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // --- CRASH CATCHER LOGIC ---
+        val prefs = getSharedPreferences("MyCrashLog", Context.MODE_PRIVATE)
+        val crashData = prefs.getString("error_log", null)
+        
+        Thread.setDefaultUncaughtExceptionHandler { _, e ->
+            prefs.edit().putString("error_log", e.stackTraceToString()).commit()
+            exitProcess(1)
+        }
+        
+        if (crashData != null) {
+            // App crash ayithe, next time open chesinappudu error vastundi
+            setContent {
+                Text(
+                    text = "APP CRASH AYYINDI BRO! ERROR IDIGO:\n\n$crashData",
+                    color = androidx.compose.ui.graphics.Color.Red,
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                )
+            }
+            // Error clear chestham, next time ki fresh ga open avadaniki
+            prefs.edit().remove("error_log").apply()
+            return
+        }
+        // --- END ---
+
+        // Normal app launch
+        setContent {
+            MadhGFXProApp()
+        }
+    }
+}
 
 class MainActivity : AppCompatActivity() {
 
