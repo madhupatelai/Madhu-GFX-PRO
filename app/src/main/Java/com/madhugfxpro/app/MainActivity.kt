@@ -1,11 +1,10 @@
 package com.madhugfxpro.app
 
-import android.os.Bundle
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,10 +12,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,14 +27,19 @@ private val Accent = Color(0xFF7C4DFF)
 private val Muted = Color(0xFF9EA3B0)
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MadhGFXProApp() }
+
+        setContent {
+            MadhGFXProApp()
+        }
     }
 }
 
 @Composable
 fun MadhGFXProApp() {
+
     MaterialTheme(
         colorScheme = darkColorScheme(
             background = Bg,
@@ -47,183 +52,448 @@ fun MadhGFXProApp() {
 }
 
 @Composable
-private fun GfxHome() {
+fun GfxHome() {
+
     var fps by remember { mutableStateOf(60) }
     var graphics by remember { mutableStateOf("Smooth") }
     var antiAliasing by remember { mutableStateOf(true) }
     var shadows by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
-    fun openLink(url: String) {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Bg
+    ) {
 
-    Surface(modifier = Modifier.fillMaxSize(), color = Bg) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+
+            // =========================
+            // HEADER
+            // =========================
+
             item {
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Icon(
-                        Icons.Default.Bolt,
+                        imageVector = Icons.Default.Bolt,
                         contentDescription = null,
                         tint = Accent,
-                        modifier = Modifier.size(34.dp)
+                        modifier = Modifier.size(38.dp)
                     )
-                    Spacer(Modifier.width(10.dp))
-                    Column {
-                        Text("MadhGFXPro", fontSize = 26.sp, fontWeight = FontWeight.Bold)
-                        Text("Gaming Graphics Helper", color = Muted, fontSize = 13.sp)
-                    }
-                }
-            }
 
-            item {
-                Card(
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Card)
-                ) {
-                    Column(Modifier.padding(18.dp)) {
-                        Text("Performance Mode", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Spacer(
+                        modifier = Modifier.width(10.dp)
+                    )
+
+                    Column {
+
                         Text(
-                            "Choose a balanced preset for supported games.",
+                            text = "MadhGFXPro",
+                            fontSize = 27.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "Gaming Graphics Helper",
                             color = Muted,
                             fontSize = 13.sp
                         )
-                        Spacer(Modifier.height(14.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            listOf("Balanced", "Performance", "Quality").forEach { mode ->
-                                FilterChip(
-                                    selected = mode == "Performance",
-                                    onClick = { },
-                                    label = { Text(mode) }
-                                )
-                            }
+                    }
+                }
+            }
+
+            // =========================
+            // PERFORMANCE
+            // =========================
+
+            item {
+
+                SettingCard(
+                    title = "Performance Mode",
+                    subtitle = "Choose your preferred performance preset."
+                ) {
+
+                    Row(
+                        horizontalArrangement =
+                            Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        listOf(
+                            "Balanced",
+                            "Performance",
+                            "Quality"
+                        ).forEach { mode ->
+
+                            FilterChip(
+                                selected = mode == "Performance",
+                                onClick = {},
+                                label = {
+                                    Text(mode)
+                                }
+                            )
                         }
                     }
                 }
             }
 
+            // =========================
+            // FPS
+            // =========================
+
             item {
-                SettingCard("FPS", "Target frame-rate preference") {
+
+                SettingCard(
+                    title = "FPS",
+                    subtitle = "Target frame-rate preference"
+                ) {
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement =
+                            Arrangement.spacedBy(8.dp)
                     ) {
-                        listOf(30, 60, 90, 120).forEach { value ->
+
+                        listOf(
+                            30,
+                            60,
+                            90,
+                            120
+                        ).forEach { value ->
+
                             FilterChip(
                                 selected = fps == value,
-                                onClick = { fps = value },
-                                label = { Text("$value") }
+                                onClick = {
+                                    fps = value
+                                },
+                                label = {
+                                    Text("$value FPS")
+                                }
                             )
                         }
                     }
                 }
             }
 
+            // =========================
+            // GRAPHICS
+            // =========================
+
             item {
-                SettingCard("Graphics", "Visual preset") {
-                    listOf("Smooth", "Balanced", "HD", "Ultra").forEach { value ->
+
+                SettingCard(
+                    title = "Graphics",
+                    subtitle = "Select visual preset"
+                ) {
+
+                    listOf(
+                        "Smooth",
+                        "Balanced",
+                        "HD",
+                        "Ultra"
+                    ).forEach { value ->
+
                         Row(
-                            Modifier.fillMaxWidth().padding(vertical = 3.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 3.dp),
+                            verticalAlignment =
+                                Alignment.CenterVertically
                         ) {
+
                             RadioButton(
-                                selected = graphics == value,
-                                onClick = { graphics = value }
+                                selected =
+                                    graphics == value,
+                                onClick = {
+                                    graphics = value
+                                }
                             )
-                            Text(value)
+
+                            Text(
+                                text = value
+                            )
                         }
                     }
                 }
             }
 
+            // =========================
+            // ADVANCED
+            // =========================
+
             item {
-                SettingCard("Advanced", "Optional visual features") {
-                    SwitchRow("Anti-aliasing", antiAliasing) { antiAliasing = it }
-                    SwitchRow("Shadows", shadows) { shadows = it }
+
+                SettingCard(
+                    title = "Advanced",
+                    subtitle = "Optional visual features"
+                ) {
+
+                    SwitchRow(
+                        title = "Anti-aliasing",
+                        checked = antiAliasing
+                    ) {
+                        antiAliasing = it
+                    }
+
+                    SwitchRow(
+                        title = "Shadows",
+                        checked = shadows
+                    ) {
+                        shadows = it
+                    }
                 }
             }
 
+            // =========================
+            // SAVE BUTTON
+            // =========================
+
             item {
+
                 Button(
-                    onClick = { },
-                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    onClick = {
+
+                        // Save preset action
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Icon(Icons.Default.CheckCircle, null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("SAVE PRESET", fontWeight = FontWeight.Bold)
+
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null
+                    )
+
+                    Spacer(
+                        modifier = Modifier.width(8.dp)
+                    )
+
+                    Text(
+                        text = "SAVE PRESET",
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
 
+            // =========================
+            // FOLLOW ME
+            // =========================
+
             item {
-                SettingCard("Follow Me", "Stay connected with MadhGFXPro") {
+
+                SettingCard(
+                    title = "Follow Me",
+                    subtitle = "Stay connected with MadhGFXPro"
+                ) {
+
                     SocialButton(
                         icon = Icons.Default.CameraAlt,
                         title = "Instagram",
                         handle = "@____madhu_patel____"
                     ) {
-                        openLink("https://www.instagram.com/____madhu_patel____")
+
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(
+                                "https://www.instagram.com/____madhu_patel____"
+                            )
+                        )
+
+                        context.startActivity(intent)
                     }
-                    Spacer(Modifier.height(8.dp))
+
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
+
                     SocialButton(
                         icon = Icons.Default.PlayArrow,
                         title = "YouTube",
                         handle = "@youtuberzx"
                     ) {
-                        openLink("https://www.youtube.com/@youtuberzx")
+
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(
+                                "https://www.youtube.com/@youtuberzx"
+                            )
+                        )
+
+                        context.startActivity(intent)
                     }
                 }
             }
 
+            // =========================
+            // FOOTER
+            // =========================
+
             item {
+
                 Text(
-                    "MadhGFXPro changes preferences only inside this app. It does not modify protected game files or bypass game security.",
+                    text = "MadhGFXPro • Version 1.0",
                     color = Muted,
                     fontSize = 11.sp,
-                    modifier = Modifier.padding(horizontal = 4.dp)
+                    modifier = Modifier
+                        .padding(
+                            horizontal = 4.dp,
+                            vertical = 5.dp
+                        )
+                )
+
+                Text(
+                    text = "Settings helper only. Does not modify protected game files or bypass game security.",
+                    color = Muted,
+                    fontSize = 11.sp,
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
                 )
             }
         }
     }
 }
 
+// =====================================================
+// SETTING CARD
+// =====================================================
+
 @Composable
-private fun SettingCard(
+fun SettingCard(
     title: String,
     subtitle: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
+
     Card(
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Card)
+        colors = CardDefaults.cardColors(
+            containerColor = Card
+        )
     ) {
-        Column(Modifier.padding(18.dp)) {
-            Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(subtitle, color = Muted, fontSize = 13.sp)
-            Spacer(Modifier.height(10.dp))
+
+        Column(
+            modifier = Modifier.padding(18.dp)
+        ) {
+
+            Text(
+                text = title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                modifier = Modifier.height(3.dp)
+            )
+
+            Text(
+                text = subtitle,
+                color = Muted,
+                fontSize = 13.sp
+            )
+
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+
             content()
         }
     }
 }
 
+// =====================================================
+// SWITCH ROW
+// =====================================================
+
 @Composable
-private fun SwitchRow(
+fun SwitchRow(
     title: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
+
     Row(
-        Modifier.fillMaxWidth().padding(vertical = 5.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp),
+        verticalAlignment =
+            Alignment.CenterVertically
     ) {
-        Text(title, Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
+
+        Text(
+            text = title,
+            modifier = Modifier.weight(1f),
+            fontSize = 15.sp
+        )
+
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
+    }
+}
+
+// =====================================================
+// SOCIAL BUTTON
+// =====================================================
+
+@Composable
+fun SocialButton(
+    icon: ImageVector,
+    title: String,
+    handle: String,
+    onClick: () -> Unit
+) {
+
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(55.dp),
+        shape = RoundedCornerShape(14.dp)
+    ) {
+
+        Icon(
+            imageVector = icon,
+            contentDescription = null
+        )
+
+        Spacer(
+            modifier = Modifier.width(10.dp)
+        )
+
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment =
+                Alignment.Start
+        ) {
+
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = handle,
+                color = Muted,
+                fontSize = 11.sp
+            )
+        }
+
+        Icon(
+            imageVector = Icons.Default.OpenInNew,
+            contentDescription = null
+        )
     }
 }
