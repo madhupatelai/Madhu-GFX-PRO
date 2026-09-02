@@ -1,12 +1,16 @@
 package com.madhugfxpro.app
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -19,66 +23,60 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.appcompat.app.AppCompatActivity
-import android.content.Context
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import kotlin.system.exitProcess
 
-private val Bg = Color(0xFF090A0F)
+private val Bg = Color(0xFF09DA0F)
 private val Card = Color(0xFF14161D)
 private val Accent = Color(0xFF7C4DFF)
 private val Muted = Color(0xFF9EA3B0)
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        // --- CRASH CATCHER LOGIC ---
+        // 1. App start avvagane FIRST crash catcher ready chesthunnam
         val prefs = getSharedPreferences("MyCrashLog", Context.MODE_PRIVATE)
-        val crashData = prefs.getString("error_log", null)
-        
         Thread.setDefaultUncaughtExceptionHandler { _, e ->
             prefs.edit().putString("error_log", e.stackTraceToString()).commit()
             exitProcess(1)
         }
+
+        val crashData = prefs.getString("error_log", null)
         
+        // 2. Okavela last time crash ayunte, 2nd time malli crash avvakunda SAFE THEME apply chesthunnam
         if (crashData != null) {
-            // App crash ayithe, next time open chesinappudu error vastundi
+            setTheme(androidx.appcompat.R.style.Theme_AppCompat_DayNight_NoActionBar)
+        }
+
+        // 3. Ippudu super.onCreate run avuthundi
+        super.onCreate(savedInstanceState)
+        
+        // 4. App crash log unte, Red color text screen chupistham
+        if (crashData != null) {
             setContent {
                 Text(
                     text = "APP CRASH AYYINDI BRO! ERROR IDIGO:\n\n$crashData",
-                    color = androidx.compose.ui.graphics.Color.Red,
-                    modifier = androidx.compose.ui.Modifier
+                    color = Color.Red,
+                    modifier = Modifier
                         .fillMaxSize()
+                        .padding(16.dp)
                         .verticalScroll(rememberScrollState())
                 )
             }
-            // Error clear chestham, next time ki fresh ga open avadaniki
+            // Next time fresh ga open avvadaniki log clear chesthunnam
             prefs.edit().remove("error_log").apply()
             return
         }
-        // --- END ---
 
-        // Normal app launch
+        // --- NORMAL APP LAUNCH ---
         setContent {
             MadhGFXProApp()
         }
     }
 }
 
-class MainActivity : AppCompatActivity() {
+// IKKADA NUNCHI NEE PATHA CODE ALANE UNCHU...
+// @Composable 
+// fun MadhGFXProApp() { ... }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            MadhGFXProApp()
-        }
-    }
-}
 
 @Composable
 fun MadhGFXProApp() {
