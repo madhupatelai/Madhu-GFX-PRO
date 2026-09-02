@@ -81,6 +81,10 @@ dependencies {
         "androidx.compose.material:material-icons-extended"
     )
 
+    implementation(
+        "com.google.android.material:material:1.11.0"
+    )
+
     debugImplementation(
         "androidx.compose.ui:ui-tooling"
     )
